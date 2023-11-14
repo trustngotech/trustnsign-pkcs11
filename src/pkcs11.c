@@ -748,12 +748,12 @@ CK_DEFINE_FUNCTION(CK_RV, C_SignInit)(CK_SESSION_HANDLE hSession, CK_MECHANISM_P
 	rv = getKEY_TYPE(hKey, &type);
 	if (rv != CKR_OK)
 		return rv;
-	if ((CKM_ECDSA == pMechanism->mechanism) && (type != CKK_EC))
+	if ( (type == CKK_EC) && (CKM_ECDSA != pMechanism->mechanism))
 	{
 		return CKR_KEY_TYPE_INCONSISTENT;
 	}
 
-	if ((CKM_RSA_PKCS_PSS == pMechanism->mechanism) && (type != CKK_RSA))
+	if ((type == CKK_RSA) && (CKM_RSA_PKCS_PSS != pMechanism->mechanism))
 	{
 		return CKR_KEY_TYPE_INCONSISTENT;
 	}
