@@ -10,3 +10,5 @@ Debug/
 Release/
 ipch/
 .vs/
+.vscode/
+*.so

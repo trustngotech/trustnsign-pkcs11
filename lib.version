@@ -1,7 +1,6 @@
-EMPTYPKCS11 {
+TRUSTNSIGNPKCS11 {
   global:
 	C_*;
   local:
 	*;
 };
-
