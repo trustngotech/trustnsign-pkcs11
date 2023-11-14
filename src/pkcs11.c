@@ -303,7 +303,7 @@ CK_DEFINE_FUNCTION(CK_RV, C_GetMechanismList)(CK_SLOT_ID slotID, CK_MECHANISM_TY
 			return CKR_BUFFER_TOO_SMALL;
 
 		pMechanismList[0] = CKM_ECDSA;
-		pMechanismList[1] = CKM_RSA_PKCS_PSS;
+		pMechanismList[1] = CKM_RSA_PKCS;
 
 		*pulCount = 2;
 	}
@@ -331,7 +331,7 @@ CK_DEFINE_FUNCTION(CK_RV, C_GetMechanismInfo)(CK_SLOT_ID slotID, CK_MECHANISM_TY
 			pInfo->flags = CKF_SIGN;
 			break;
 
-		case CKM_RSA_PKCS_PSS:
+		case CKM_RSA_PKCS:
 			pInfo->ulMinKeySize = 2048;
 			pInfo->ulMaxKeySize = 4096;
 			pInfo->flags = CKF_SIGN;
@@ -753,7 +753,7 @@ CK_DEFINE_FUNCTION(CK_RV, C_SignInit)(CK_SESSION_HANDLE hSession, CK_MECHANISM_P
 		return CKR_KEY_TYPE_INCONSISTENT;
 	}
 
-	if ((type == CKK_RSA) && (CKM_RSA_PKCS_PSS != pMechanism->mechanism))
+	if ((type == CKK_RSA) && (CKM_RSA_PKCS != pMechanism->mechanism))
 	{
 		return CKR_KEY_TYPE_INCONSISTENT;
 	}
