@@ -463,39 +463,37 @@ CK_DEFINE_FUNCTION(CK_RV, C_SetOperationState)(CK_SESSION_HANDLE hSession, CK_BY
 CK_DEFINE_FUNCTION(CK_RV, C_Login)(CK_SESSION_HANDLE hSession, CK_USER_TYPE userType, CK_UTF8CHAR_PTR pPin, CK_ULONG ulPinLen)
 {
 	CK_RV ret = CKR_GENERAL_ERROR;
-	char *buf = malloc(ulPinLen+1);
-	if (NULL == buf)
-		goto exit;
-	memcpy(buf, pPin, ulPinLen);
-	buf[ulPinLen] = '\0';
-	char *delimiter = strchr(buf, ':');
-	if(NULL == delimiter)
-	{
+	char *password = NULL;
+	char *username = NULL;
+
+	username = getenv("TNS_USERNAME");
+    if(NULL == username) {
 		ret = CKR_PIN_INVALID;
+		goto exit;
 	}
-	else
+
+	password = malloc(ulPinLen+1);
+	if(password == NULL) {
+		ret = CKR_DEVICE_ERROR;
+		goto exit;
+	}
+	memcpy(password, pPin, ulPinLen);
+	password[ulPinLen] = '\0';
+
+	if(0 != interface_login(username, password))
 	{
-		char *user = strtok(buf, ":");
-		char *password = strtok(NULL, ":");
-		if(0 == interface_login(user, password))
-		{
-			ret = CKR_OK;
-		}
-		else
-		{
-			ret = CKR_DEVICE_ERROR;
-		}
-		
+		ret = CKR_DEVICE_ERROR;
+		goto exit;
 	}
+	ret = CKR_OK;
 exit:
-	if(buf) free(buf);
+	if(password != NULL) free(password);
 	return ret;
 }
 
 
 CK_DEFINE_FUNCTION(CK_RV, C_Logout)(CK_SESSION_HANDLE hSession)
 {
-	// TODO: TBD
 	return CKR_OK;
 }
 
