@@ -12,3 +12,4 @@ ipch/
 .vs/
 .vscode/
 *.so
+*.o
