@@ -796,7 +796,12 @@ CK_DEFINE_FUNCTION(CK_RV, C_Sign)(CK_SESSION_HANDLE hSession, CK_BYTE_PTR pData,
 	}
 	else
 	{
-		*pulSignatureLen = 0;
+		/*  
+		 * Default size allowing to be sure that even a RSA4096 will fit the provided buffer.
+		 * If the buffer is still too small an error will be triggered during sign operation.
+		 * This code is required by imgtool PKCS11 feature which ask for buffer size in a first time.
+		 */
+		*pulSignatureLen = 640;
 	}
 
 	return CKR_OK;

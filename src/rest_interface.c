@@ -543,6 +543,7 @@ int get_object_attributes(CK_OBJECT_HANDLE hObject, CK_ATTRIBUTE_PTR pTemplate, 
                     memcpy(pTemplate[i].pValue, object.pAttributes[j].pValue, object.pAttributes[j].ulValueLen);
                 }
                 pTemplate[i].ulValueLen = object.pAttributes[j].ulValueLen;
+                break;
             }
         }
     }
