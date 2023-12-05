@@ -56,14 +56,14 @@ To sign using an ECDSA private key, use the following commands:
 
 ```bash
 openssl dgst -binary -sha256 <input file> > <hash file>
-pkcs11-tool -v --module ./trustnsign-pkcs11-x64.so --login -m ECDSA --id <id of an ECDSA private key> -s -i <hash file> -o <signature file>
+pkcs11-tool -v --module /path/to/trustnsign-pkcs11-x64.so --login -m ECDSA --id <id of an ECDSA private key> -s -i <hash file> -o <signature file>
 ```
 
 If you are willing to use RSA instead:
 
 ```bash
 openssl dgst -binary -sha256 <input file> > <hash file>
-pkcs11-tool -v --module ./trustnsign-pkcs11-x64.so --login --hash-algorithm sha256 -m RSA-PKCS-PSS --id <id of an RSA private key> -s -i <hash file> -o <signature file>
+pkcs11-tool -v --module /path/to/trustnsign-pkcs11-x64.so --login --hash-algorithm sha256 -m RSA-PKCS-PSS --id <id of an RSA private key> -s -i <hash file> -o <signature file>
 ```
 
 **Diplaying certificate content**
@@ -86,15 +86,43 @@ To sign using an ECDSA or RSA private key, use the following commands:
 
 ```bash
 openssl dgst -binary -sha256 <input_file> > <hash_file>
-OPENSSL_CNF=/path/to/engine.conf openssl pkeyutl -sign -engine pkcs11 -keyform engine -inkey "pkcs11:object=<key_label>" -in <hash_file> -out <signature_file>
+OPENSSL_CONF=/path/to/engine.conf openssl pkeyutl -sign -engine pkcs11 -keyform engine -inkey "pkcs11:object=<key_label>" -in <hash_file> -out <signature_file>
 ```
 
 To verify the signature, use the following command :
 
 ```bash
-OPENSSL_CNF=engine.conf openssl pkeyutl -verify -engine pkcs11 -keyform engine -pubin -inkey "pkcs11:object=<key_label>" -in <hash_file> -sigfile <signature_file>
+OPENSSL_CONF=/path/to/engine.conf openssl pkeyutl -verify -engine pkcs11 -keyform engine -pubin -inkey "pkcs11:object=<key_label>" -in <hash_file> -sigfile <signature_file>
 ```
 
 You can directly provided the password to open by using the following PKCS1 URI: `"pkcs11:object=<key_label>;pin-value=<your_password>"`.
 
 More information on PKCS11 URI are available in (RFC7512)[https://datatracker.ietf.org/doc/html/rfc7512].
+
+### Signing a RAUC bundle
+
+**Prerquisites**
+
+Set an environment variable storing the path of the TrustnSign PKCS11 interface:
+```bash
+export RAUC_PKCS11_MODULE="/path/to/trustnsign-pkcs11-x64.so"
+```
+
+**Self-signed certificate**
+
+First you need to generate a new private key and a self-signed certificate on the website side. Then, use the following command to download the certificate from the server:
+
+```bash
+pkcs11-tool --module /path/to/trustnsign-pkcs11-x64.so --login --type cert \
+--id <cert_id> -r -o self-signed-certificate.der
+openssl x509 -inform DER -outform PEM -in self-signed-certificate.der -out self-signed-certificate.pem
+```
+
+Finally, use the following command to sign your bundle using the TrustnSign:
+
+```bash
+rauc bundle --cert="pkcs11:object=<key_label>" --key="pkcs11:object=<key_label>" --keyring=cert.pem </path/to/files> </path/to/bundle>
+```
+
+**Simple CA**
+On
