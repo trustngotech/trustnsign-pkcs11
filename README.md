@@ -97,7 +97,7 @@ OPENSSL_CONF=/path/to/engine.conf openssl pkeyutl -verify -engine pkcs11 -keyfor
 
 You can directly provided the password to open by using the following PKCS1 URI: `"pkcs11:object=<key_label>;pin-value=<your_password>"`.
 
-More information on PKCS11 URI are available in (RFC7512)[https://datatracker.ietf.org/doc/html/rfc7512].
+More information on PKCS11 URI are available in [RFC7512](https://datatracker.ietf.org/doc/html/rfc7512).
 
 ### Signing a RAUC bundle
 
@@ -125,4 +125,4 @@ rauc bundle --cert="pkcs11:object=<key_label>" --key="pkcs11:object=<key_label>"
 ```
 
 **Simple CA**
-On
+TBD
