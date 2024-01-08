@@ -95,7 +95,7 @@ To verify the signature, use the following command :
 OPENSSL_CONF=/path/to/engine.conf openssl pkeyutl -verify -engine pkcs11 -keyform engine -pubin -inkey "pkcs11:object=<key_label>" -in <hash_file> -sigfile <signature_file>
 ```
 
-You can directly provided the password to open by using the following PKCS1 URI: `"pkcs11:object=<key_label>;pin-value=<your_password>"`.
+You can directly provide your password by using the following PKCS11 URI: `"pkcs11:object=<key_label>;pin-value=<your_password>"`.
 
 More information on PKCS11 URI are available in [RFC7512](https://datatracker.ietf.org/doc/html/rfc7512).
 
